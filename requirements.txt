@@ -1,0 +1,15 @@
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+requests
+python-dotenv
+Werkzeug
+SQLAlchemy
+WTForms
+Flask-WTF
+Flask-Login
+psycopg2-binary
+Pillow
+python-dateutil
+pytz
+gunicorn

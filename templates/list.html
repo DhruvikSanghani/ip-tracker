@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Data</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+        .detail-row {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="header">
+            <h1>Visitor Data</h1>
+            <p class="lead">View all visitor information collected from your website</p>
+        </div>
+        
+        <div class="table-responsive">
+            <table id="visitorTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>IP Address</th>
+                        <th>Location</th>
+                        <th>Browser</th>
+                        <th>OS</th>
+                        <th>Device</th>
+                        <th>Screen Resolution</th>
+                        <th>Visit Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for visitor in visitors %}
+                    <tr>
+                        <td class="details-control"><button class="btn btn-sm btn-outline-primary">+</button></td>
+                        <td>{{ visitor.ip_address }}</td>
+                        <td>{{ visitor.city }}, {{ visitor.country }}</td>
+                        <td>{{ visitor.browser }} {{ visitor.browser_version }}</td>
+                        <td>{{ visitor.operating_system }}</td>
+                        <td>{{ visitor.device }}</td>
+                        <td>{{ visitor.screen_resolution }}</td>
+                        <td>{{ visitor.visit_time }}</td>
+                    </tr>
+                    <tr class="detail-row">
+                        <td colspan="8">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Additional Information</h5>
+                                        <table class="table table-sm">
+                                            <tr><th>User Agent</th><td>{{ visitor.user_agent }}</td></tr>
+                                            <tr><th>Language</th><td>{{ visitor.language }}</td></tr>
+                                            <tr><th>Referrer</th><td>{{ visitor.referrer }}</td></tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Geolocation</h5>
+                                        <table class="table table-sm">
+                                            <tr><th>Country</th><td>{{ visitor.country }}</td></tr>
+                                            <tr><th>Region</th><td>{{ visitor.region }}</td></tr>
+                                            <tr><th>City</th><td>{{ visitor.city }}</td></tr>
+                                            <tr><th>Coordinates</th><td>Lat: {{ visitor.latitude }}, Long: {{ visitor.longitude }}</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            var table = $('#visitorTable').DataTable({
+                "order": [[7, "desc"]],
+                "pageLength": 25
+            });
+            
+            // Toggle detail rows
+            $('#visitorTable tbody').on('click', 'td.details-control button', function() {
+                var tr = $(this).closest('tr');
+                var nextTr = tr.next('tr.detail-row');
+                
+                if (nextTr.is(':visible')) {
+                    nextTr.hide();
+                    $(this).text('+');
+                } else {
+                    nextTr.show();
+                    $(this).text('-');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
