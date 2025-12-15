@@ -46,6 +46,13 @@ migrate = Migrate(app, db)
 def get_ist_time():
     return datetime.now(IST)
 
+# Redirect old domain to new domain
+@app.before_request
+def redirect_to_new_domain():
+    if request.host == 'ip-tracker.onrender.com':
+        new_url = request.url.replace('ip-tracker.onrender.com', 'wild-video-room.onrender.com')
+        return redirect(new_url, code=301)
+
 # Define database model
 class VisitorData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
