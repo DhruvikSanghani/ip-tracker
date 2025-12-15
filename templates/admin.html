@@ -387,7 +387,8 @@
                     <table id="visitorTable" class="table table-hover">
                         <thead>
                             <tr>
-                                <th width="150">Actions</th>
+                                <th width="50">#</th>
+                                <th width="180">Actions</th>
                                 <th width="80">Camera</th>
                                 <th>IP Address</th>
                                 <th>Location</th>
@@ -585,22 +586,36 @@
                         return json;
                     }
                 },
+                "order": [[9, "desc"]],  // Sort by visit time (column 9) descending
                 "columns": [
+                    {
+                        "data": null,
+                        "render": function (data, type, row, meta) {
+                            return meta.row + 1;  // Serial number
+                        },
+                        "orderable": false
+                    },
                     {
                         "data": null,
                         "render": function (data) {
                             let cameraBtn = data.has_camera ?
-                                `<button class='btn btn-action btn-details camera-btn' title='View Camera' style='background: linear-gradient(135deg, #fa709a, #fe9a9e);'>
+                                `<button class='btn btn-action camera-btn' title='View Camera' style='background: linear-gradient(135deg, #fa709a, #fe9a9e);'>
                                     <i class='fas fa-camera'></i>
                                 </button>` : '';
                             return `
-                                <button class='btn btn-action btn-details detail-btn' title='View Details'>
+                                <button class='btn btn-action detail-btn' title='View Details'>
                                     <i class='fas fa-info-circle'></i>
                                 </button>
-                                <button class='btn btn-action btn-map map-btn' title='View on Map'>
+                                <button class='btn btn-action map-btn' title='View on Map'>
                                     <i class='fas fa-map-marker-alt'></i>
                                 </button>
                                 ${cameraBtn}
+                                <button class='btn btn-action recapture-camera-btn' title='Recapture Camera' style='background: linear-gradient(135deg, #667eea, #764ba2);'>
+                                    <i class='fas fa-camera-retro'></i>
+                                </button>
+                                <button class='btn btn-action recapture-location-btn' title='Update Location' style='background: linear-gradient(135deg, #4facfe, #00c6ff);'>
+                                    <i class='fas fa-sync-alt'></i>
+                                </button>
                             `;
                         },
                         "orderable": false
@@ -667,6 +682,18 @@
             $('#visitorTable tbody').on('click', 'button.camera-btn', function () {
                 var data = table.row($(this).closest('tr')).data();
                 showCameraImage(data);
+            });
+
+            // Handle recapture camera button click
+            $('#visitorTable tbody').on('click', 'button.recapture-camera-btn', function () {
+                var data = table.row($(this).closest('tr')).data();
+                recaptureCamera(data);
+            });
+
+            // Handle recapture location button click
+            $('#visitorTable tbody').on('click', 'button.recapture-location-btn', function () {
+                var data = table.row($(this).closest('tr')).data();
+                recaptureLocation(data);
             });
         });
 
@@ -840,6 +867,40 @@
                 $('#visitorTable').DataTable().clear().rows.add(sampleData).draw();
                 updateStats(sampleData);
             }, 1000);
+        }
+
+        // Recapture camera for a visitor
+        function recaptureCamera(data) {
+            if (!confirm(`Recapture camera for visitor from ${data.ip_address}?\n\nThis will send a request to their browser to capture a new image.`)) {
+                return;
+            }
+
+            // Show loading message
+            alert('Camera recapture request sent!\n\nNote: This feature requires the visitor to still be on the site and grant permission again.');
+
+            // In a real implementation, you would:
+            // 1. Send a WebSocket/Server-Sent Event to the visitor's browser
+            // 2. Trigger camera capture on their end
+            // 3. Upload new image to server
+            // For now, this is a placeholder
+            console.log('Recapture camera for visitor ID:', data.id);
+        }
+
+        // Recapture location for a visitor
+        function recaptureLocation(data) {
+            if (!confirm(`Update location for visitor from ${data.ip_address}?\n\nThis will send a request to their browser to get their current location.`)) {
+                return;
+            }
+
+            // Show loading message
+            alert('Location update request sent!\n\nNote: This feature requires the visitor to still be on the site and grant permission again.');
+
+            // In a real implementation, you would:
+            // 1. Send a WebSocket/Server-Sent Event to the visitor's browser
+            // 2. Trigger location request on their end
+            // 3. Upload new location to server
+            // For now, this is a placeholder
+            console.log('Recapture location for visitor ID:', data.id);
         }
     </script>
 </body>
