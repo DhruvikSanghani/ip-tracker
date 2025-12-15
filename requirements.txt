@@ -13,3 +13,6 @@ Pillow
 python-dateutil
 pytz
 gunicorn
+flask-socketio
+simple-websocket
+eventlet
